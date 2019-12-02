@@ -1,4 +1,1 @@
-openssl 1.1.1d from https://openssl.org/source (Apache License)
-
-
-Patched for compatibility with OpenResty.
+libp11 a41cbb2 from https://github.com/OpenSC/libp11 (LGPL License)
