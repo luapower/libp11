@@ -374,6 +374,10 @@ int ctx_finish(ENGINE_CTX *ctx)
 static X509 *ctx_load_cert(ENGINE_CTX *ctx, const char *s_slot_cert_id,
 		const int login)
 {
+
+	//uncomment this to check if certificate loading is attempted.
+	//fprintf(stderr, "ctx_load_cert: %s\n", s_slot_cert_id);
+
 	PKCS11_SLOT *slot;
 	PKCS11_SLOT *found_slot = NULL, **matched_slots = NULL;
 	PKCS11_TOKEN *tok, *match_tok = NULL;
@@ -510,7 +514,7 @@ static X509 *ctx_load_cert(ENGINE_CTX *ctx, const char *s_slot_cert_id,
 
 		/* If the legacy slot ID format was used */
 		if (slot_nr != -1) {
-			ctx_log(ctx, 0, "Invalid slot number: %d\n", slot_nr);
+			ctx_log(ctx, 0, "Invalid slot number (1): %d\n", slot_nr);
 			goto error;
 		} else {
 			found_slot = PKCS11_find_token(ctx->pkcs11_ctx,
@@ -573,6 +577,8 @@ static X509 *ctx_load_cert(ENGINE_CTX *ctx, const char *s_slot_cert_id,
 
 		ctx_log(ctx, 1, "Found %u cert%s:\n", cert_count,
 				(cert_count <= 1) ? "" : "s");
+
+		#if 0
 		if ((s_slot_cert_id && *s_slot_cert_id) &&
 				(cert_id_len != 0 || cert_label != NULL)) {
 			for (m = 0; m < cert_count; m++) {
@@ -599,6 +605,11 @@ static X509 *ctx_load_cert(ENGINE_CTX *ctx, const char *s_slot_cert_id,
 		if (selected_cert) {
 			break;
 		}
+		#endif
+
+		selected_cert = certs;
+		break;
+
 	}
 
 	if (selected_cert != NULL) {
@@ -806,7 +817,7 @@ static EVP_PKEY *ctx_load_key(ENGINE_CTX *ctx, const char *s_slot_key_id,
 
 		/* If the legacy slot ID format was used */
 		if (slot_nr != -1) {
-			ctx_log(ctx, 0, "Invalid slot number: %d\n", slot_nr);
+			ctx_log(ctx, 0, "Invalid slot number (2): %d\n", slot_nr);
 			goto error;
 		} else {
 			found_slot = PKCS11_find_token(ctx->pkcs11_ctx,
@@ -885,6 +896,7 @@ static EVP_PKEY *ctx_load_key(ENGINE_CTX *ctx, const char *s_slot_key_id,
 				(char *)(isPrivate ? "private" : "public"),
 				(key_count == 1) ? "" : "s");
 
+		#if 0
 		if (s_slot_key_id && *s_slot_key_id &&
 				(key_id_len != 0 || key_label != NULL)) {
 			for (m = 0; m < key_count; m++) {
@@ -908,6 +920,11 @@ static EVP_PKEY *ctx_load_key(ENGINE_CTX *ctx, const char *s_slot_key_id,
 		if (selected_key) {
 			break;
 		}
+		#endif
+
+		selected_key = keys;
+		break;
+
 	}
 
 	if (selected_key != NULL) {
